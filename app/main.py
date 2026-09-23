@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException, status
 from app.schemas import UserCreate
 
-app = FastAPI(title="Lab1 - FastAPI User Api")
 
+app = FastAPI(title="Lab1 - FastAPI User Api")
+#array used as database 
 users: list[UserCreate] = []
 @app.get("/health")
 def health():
@@ -22,3 +23,18 @@ def add_user(new_user: UserCreate):
 
     users.append(new_user)
     return new_user
+
+@app.get("/api/users")
+def get_users():
+    return users
+
+@app.get("/api/users/{userid}")
+def get_user(userid: int):
+        for existing_user in users:
+            if existing_user.userid == userid:
+                return existing_user
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+         )
